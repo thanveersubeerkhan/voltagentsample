@@ -3,11 +3,15 @@
 import { useEffect, useState } from "react"
 import { DataTable } from "@/componets"
 import { ChatInput } from "@/componets"
-import type { TableColumn,TableRow } from "./lib/types"
+import type { ChartProps, TableColumn,TableRow } from "./lib/types"
+import { DynamicBarChart } from "@/componets/DynamicBarChart"
+import { DynamicLineChart } from "@/componets/DynamicLineChart"
+import { DynamicRoundChart } from "@/componets/DynamicRoundChart"
 
 export default function Home() {
   const [tableData, setTableData] = useState<TableRow[]>([])
-  const [columns, setColumns] = useState<TableColumn[]>([])
+  const [columns, setColumns] = useState<TableColumn[]>( [])
+  const [chart, setchart] = useState<ChartProps>()
   const [isLoading, setIsLoading] = useState(false)
   const [prompt, setPrompt] = useState("")
 
@@ -16,7 +20,7 @@ export default function Home() {
     setIsLoading(true)
 
     
-  const res = await fetch("https://voltagent.onrender.com/agents/db-agent/object", {
+  const res = await fetch("https://voltagent.onrender.com/api/db", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -24,47 +28,16 @@ export default function Home() {
     },
     body: JSON.stringify({
   "input": message,
-  "schema": {
-    "type": "object",
-    "properties": {
-      "data": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "id": { "type": "string" }
-          },
-          "required": ["id"],
-          "additionalProperties": true
-        }
-      },
-      "columns": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "key": { "type": "string" },
-            "label": { "type": "string" },
-            "type": {
-              "type": "string",
-              "enum": ["text", "badge", "date"]
-            }
-          },
-          "required": ["key", "label"]
-        }
-      }
-    },
-    "required": ["data", "columns"]
-  }
+  "schema":""
 }
 )
   });
 
   const data = await res.json();
-  console.log(data.data.data)
-   console.log(data.columns)
-  setColumns(data.data.columns)
- setTableData(data.data.data)
+  console.log(data)
+//   setColumns(data.columns)
+//  setTableData(data.data)
+ setchart(data.chart)
  setIsLoading(false)
  
 
@@ -92,10 +65,29 @@ export default function Home() {
                 <p className="text-gray-600">Loading data...</p>
               </div>
             </div>
-          ) : tableData.length > 0 ? (
+          ) : chart ? (
             <div>
               <h2 className="mb-4 text-lg font-semibold text-gray-900">Results for: {prompt}</h2>
+              <div>
+
+              </div>
               <DataTable data={tableData} columns={columns} />
+              <DynamicBarChart
+  title={chart?.title}
+  data={chart?.data||[]}
+/>
+<DynamicLineChart
+ 
+   title={chart?.title}
+  data={chart?.data||[]}
+/>
+<DynamicRoundChart
+   title={chart?.title}
+  data={chart?.data||[]}
+/>
+
+
+
             </div>
           ) : (
             <div className="flex h-48 items-center justify-center">
