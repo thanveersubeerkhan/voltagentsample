@@ -12,6 +12,8 @@ export default function Home() {
   const [tableData, setTableData] = useState<TableRow[]>([])
   const [columns, setColumns] = useState<TableColumn[]>( [])
   const [chart, setchart] = useState<ChartProps>()
+   const [chart1, setchart1] = useState<ChartProps>()
+    const [chart2, setchart2] = useState<ChartProps>()
   const [isLoading, setIsLoading] = useState(false)
   const [prompt, setPrompt] = useState("")
 
@@ -38,6 +40,8 @@ export default function Home() {
 //   setColumns(data.columns)
 //  setTableData(data.data)
  setchart(data.chart)
+  setchart1(data.chart1)
+   setchart2(data.chart2)
  setIsLoading(false)
  
 
@@ -78,12 +82,12 @@ export default function Home() {
 />
 <DynamicLineChart
  
-   title={chart?.title}
-  data={chart?.data||[]}
+   title={chart1?.title}
+  data={chart1?.data||[]}
 />
 <DynamicRoundChart
-   title={chart?.title}
-  data={chart?.data||[]}
+   title={chart2?.title}
+  data={chart2?.data||[]}
 />
 
 
